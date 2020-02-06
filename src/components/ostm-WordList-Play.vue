@@ -1,10 +1,22 @@
 <template>
   <div id="play">
     <div class="ostmPos">
-      <div class="start" @click="startQuestions" v-if="show_start_button"><button>start</button></div>
+      <div class="start" v-if="show_start_button">
+        <button @click="startQuestions" autofocus>start</button>
+      </div>
       <div class="target" v-if="show_stimulus">{{ stimulus_value }}</div>
-      <div class="answer" v-if="show_answer_input">
-        <form action=""><input type="text" /><button>enter</button></form>
+      <div v-if="show_answer_input">
+        <input refs="answer" v-model="answer" id="answer" placeholder="type word..." type="text" @keyup.enter="updateAnswers" />
+        <button @click="updateAnswers" @keyup.enter="updateAnswers">enter</button>
+      </div>
+      <div>
+        <ul>
+          <li>stimulusCounter: {{ stimulusCounter }}</li>
+          <li>setCounter: {{ setCounter }}</li>
+          <li>blockCounter: {{ blockCounter }}</li>
+          <li>answerCounter: {{ answerCounter }}</li>
+          <li>PREVIOUS raw: {{ raw }}</li>
+        </ul>
       </div>
     </div>
   </div>
@@ -16,6 +28,7 @@ export default {
 
   data: function() {
     return {
+      raw: '',
       answer: '',
       target: '',
       myTicker: '',
@@ -24,6 +37,9 @@ export default {
       answerCounter: 0,
       stimulusCounter: 0,
       stimulus_interval_ms: 0,
+      PROLIFIC_PID: 'Prolific_ID',
+      STUDY_ID: 'Study_ID',
+      SESSION_ID: 'Session_ID',
       stimulus_value: 'SAMPLE STIMULUS',
       stimulus_color: '',
       stimiulus_background: '',
@@ -51,22 +67,20 @@ export default {
   },
   methods: {
     startQuestions() {
-      this.stimulus_interval_ms = '1000'; /* figure how how to get this from the json file */
+      this.stimulus_interval_ms = '200'; /* figure how how to get this from the json file */
       this.stimulus_value = '+';
       this.show_start_button = false;
       this.show_stimulus = true;
       this.show_answer_input = false;
       // this.myTicker = setInterval(this.changeQuestion(), this.stimulus_interval_ms);
-      setInterval(() => {
-        this.myTicker = this.changeQuestion();
+      this.myTicker = setInterval(() => {
+        this.changeQuestion();
       }, this.stimulus_interval_ms);
     },
     changeQuestion() {
       const iStimuli = this.study.blocks[this.blockCounter].sets[this.setCounter].stimuli;
       this.stimulus_value = iStimuli.length;
       if (this.stimulusCounter < iStimuli.length) {
-        //hide the ticker
-        // alert('change');
         this.show_start_button = false;
         this.show_stimulus = true;
         this.show_answer_input = false;
@@ -75,7 +89,7 @@ export default {
         this.stimulus_background = iStimuli[this.stimulusCounter].backgroundcolor;
         this.stimulusCounter++;
       } else {
-        // clear the text area and stop the ticker
+        // stop the ticker and clear the text area
         clearInterval(this.myTicker);
 
         this.show_start_button = false;
@@ -86,21 +100,32 @@ export default {
         this.stimulus_background = this.studybackgroundColor;
 
         this.show_answer_input = true;
-        // figure out how to set focus on the answer input with vue
-        // answer.focus();
+
+        // // figure out how to set focus on the answer input with vue
+        // https://michaelnthiessen.com/set-focus-on-input-vue
+        this.$nextTick(() => {
+          // alert('now');
+          // this.$refs.answer.focus();
+        });
       }
     },
-    updateAnswers() {
+    updateAnswers(event) {
+      event.preventDefault();
       if (this.answerCounter < this.stimulusCounter) {
-        let timeStamp = Date.now();
-        let iStimuli = this.study.studyConfig.blocks[this.blockCounter].sets[this.setCounter].stimuli;
+        // update store with vuex mutations, pass mutation name and payload as object
+        this.$store.commit('updateAnswer', {
+          blockCounter: this.blockCounter,
+          setCounter: this.setCounter,
+          answerCounter: this.answerCounter,
+          timeStamp: Date.now(),
+          answer: this.answer
+        });
 
-        iStimuli[this.answerCounter].timeStamp = timeStamp; //load answer into json
-        iStimuli[this.answerCounter].responseTime = timeStamp; //load answer into json
-        iStimuli[this.answerCounter].response = this.answer; //load answer into json
+        this.raw = this.study.blocks[this.blockCounter].sets[this.setCounter].stimuli[this.answerCounter].response;
         this.answer = ''; //reset form for next answer
-        this.answer.focus();
         this.answerCounter++; //this is why study.ejs input id=answer, requires name to be 0 and nothing else.
+        // this.answer.focus();
+        // this.$refs.answer.focus();
       }
 
       //if we have reached the last stimulus in the set then increment the set
@@ -120,7 +145,7 @@ export default {
       }
 
       //if we have reached the last set in the block?, then increment the block
-      if (this.setCounter >= this.study.studyConfig.blocks[this.blockCounter].sets.length) {
+      if (this.setCounter >= this.study.blocks[this.blockCounter].sets.length) {
         // alert("end of block:" + blockCounter);
         // if (this.study.studyConfig.blocks[this.blockCounter].blockPopUp.length > 1) {
         //   $('#modal-body').html(state.studyConfig.blocks[blockCounter].blockPopUp);
@@ -138,10 +163,37 @@ export default {
       // document.getElementById("answer").focus();
 
       //if we have also reached the last stimulus bank then stop
-      if (this.blockCounter >= this.study.studyConfig.blocks.length) {
+      if (this.blockCounter >= this.study.blocks.length) {
         this.study.blockprocessed = this.blockCounter;
-        // saveStudy();
+        // this.show_spinny_wheel = true;
+        this.show_start_button = false;
+        this.show_stimulus = false;
+        this.show_answer_input = false;
+        this.saveResults();
       }
+    },
+    saveResults() {
+      this.show_start_button = false;
+      this.show_stimulus = false;
+      this.show_answer_input = false;
+
+      this.stimulus_value = '+';
+      this.stimulus_color = this.studyTextColor;
+      this.stimulus_background = this.studybackgroundColor;
+
+      //Study is complete return to provider
+
+      //Update Page Form
+      this.$store.commit('logParticipantDetails', {
+        saveTime: Date.now(),
+        PROLIFIC_PID: this.PROLIFIC_PID,
+        STUDY_ID: this.STUDY_ID,
+        SESSION_ID: this.SESSION_ID
+      });
+
+      this.$store.dispatch('saveStudy');
+      // figure how to make the above thenable or Wait
+      this.$router.push('/ostm/completion');
     }
   }
 };

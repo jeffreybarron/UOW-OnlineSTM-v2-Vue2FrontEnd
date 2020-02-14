@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import axios from 'axios';
+import utils from '../utils/index.js';
 
 Vue.use(Vuex);
 
@@ -37,29 +38,30 @@ export default new Vuex.Store({
     },
     shuffleStudy(state) {
       const shuffleObject = state.study;
-      console.log(state.study);
       // shuffle blocks in study
       if (shuffleObject.shuffleBlocks === true) {
         if (shuffleObject.blocks.length > 0) {
           //use splice function to seperate item zero from the rest, and shuffle it at the same time
-          var shuffled = this.shuffleArray(shuffleObject.blocks.splice(1, shuffleObject.blocks.length));
-
+          var shuffled = utils.shuffleArray(shuffleObject.blocks.splice(1, shuffleObject.blocks.length));
           /* now push each item in the shuffled list back on to the block (which at this point
            * has only item remaining from the last operation) */
           for (let n = 0; n < shuffled.length; n++) {
             shuffleObject.blocks.push(shuffled[n]);
           }
           //output to console if you want to check it..
+          console.log(shuffled);
+          console.log(shuffleObject.blocks);
         }
       }
+
       for (let i = 0; i < shuffleObject.blocks.length; i++) {
         switch (shuffleObject.shuffleMode) {
           case 'sets': // shuffle sets in a block
-            shuffleObject.blocks[i].sets = this.shuffleArray(shuffleObject.blocks[i].sets).splice(0);
+            shuffleObject.blocks[i].sets = utils.shuffleArray(shuffleObject.blocks[i].sets).splice(0);
             break;
           case 'within': // shuffle cards within sets
             for (let j = 0; j < shuffleObject.blocks[i].sets.length; j++) {
-              shuffleObject.blocks[i].sets[j].stimuli = this.shuffleArray(shuffleObject.blocks[i].sets[j].stimuli).splice(0);
+              shuffleObject.blocks[i].sets[j].stimuli = utils.shuffleArray(shuffleObject.blocks[i].sets[j].stimuli).splice(0);
             }
             break;
           case 'across': //shuffle cards across sets
@@ -73,7 +75,7 @@ export default new Vuex.Store({
               //end set
             }
             //shuffle array
-            blockDeck = this.shuffleArray(blockDeck).splice(0);
+            blockDeck = utils.shuffleArray(blockDeck).splice(0);
             //put shuffled cards into sets again
             for (let j = 0; j < shuffleObject.blocks[i].sets.length; j++) {
               for (let k = 0; k < shuffleObject.blocks[i].sets[j].stimuli.length; k++) {
@@ -88,6 +90,7 @@ export default new Vuex.Store({
           //end switch case
         }
       }
+      console.log(shuffleObject);
       state.study.loadTime = Date.now();
       this.state.study = { ...shuffleObject };
     }
@@ -145,19 +148,6 @@ export default new Vuex.Store({
         .catch(function(error) {
           this.error = error;
         });
-    }
-  },
-  methods: {
-    shuffleArray(array) {
-      // modern version of the Fisher–Yates shuffle algorithm:
-      var j, x, i;
-      for (i = array.length - 1; i > 0; i--) {
-        j = Math.floor(Math.random() * (i + 1));
-        x = array[i];
-        array[i] = array[j];
-        array[j] = x;
-      }
-      return array;
     }
   },
   modules: {}

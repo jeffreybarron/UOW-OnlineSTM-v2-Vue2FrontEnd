@@ -9,15 +9,9 @@
         <input refs="answer" v-model="answer" id="answer" placeholder="type word..." type="text" @keyup.enter="updateAnswers" />
         <button @click="updateAnswers" @keyup.enter="updateAnswers">enter</button>
       </div>
-      <div>
-        <ul>
-          <li>stimulusCounter: {{ stimulusCounter }}</li>
-          <li>setCounter: {{ setCounter }}</li>
-          <li>blockCounter: {{ blockCounter }}</li>
-          <li>answerCounter: {{ answerCounter }}</li>
-          <li>PREVIOUS raw: {{ raw }}</li>
-        </ul>
-      </div>
+    </div>
+    <div style="background: #F4F6F6; border-style:solid;border:2px;">
+      <json-view :data="study" />
     </div>
   </div>
 </template>
@@ -28,7 +22,6 @@ export default {
 
   data: function() {
     return {
-      raw: '',
       answer: '',
       target: '',
       myTicker: '',
@@ -37,10 +30,7 @@ export default {
       answerCounter: 0,
       stimulusCounter: 0,
       stimulus_interval_ms: 0,
-      PROLIFIC_PID: 'Prolific_ID',
-      STUDY_ID: 'Study_ID',
-      SESSION_ID: 'Session_ID',
-      stimulus_value: 'SAMPLE STIMULUS',
+      stimulus_value: 'STIMULUS ERROR!',
       stimulus_color: '',
       stimiulus_background: '',
       show_start_button: true,
@@ -121,7 +111,6 @@ export default {
           answer: this.answer
         });
 
-        this.raw = this.study.blocks[this.blockCounter].sets[this.setCounter].stimuli[this.answerCounter].response;
         this.answer = ''; //reset form for next answer
         this.answerCounter++; //this is why study.ejs input id=answer, requires name to be 0 and nothing else.
         // this.answer.focus();
@@ -184,11 +173,8 @@ export default {
       //Study is complete return to provider
 
       //Update Page Form
-      this.$store.commit('logParticipantDetails', {
-        saveTime: Date.now(),
-        PROLIFIC_PID: this.PROLIFIC_PID,
-        STUDY_ID: this.STUDY_ID,
-        SESSION_ID: this.SESSION_ID
+      this.$store.commit('logSaveTime', {
+        saveTime: Date.now()
       });
 
       this.$store.dispatch('saveStudy');

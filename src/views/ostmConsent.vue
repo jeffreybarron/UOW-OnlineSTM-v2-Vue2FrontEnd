@@ -16,7 +16,7 @@
       </div>
       <div class="researcherCopy" id="researcherCopy">
         <h5>Details</h5>
-        {{ consentText }}
+        <div class="consentText" v-html="consentText"></div>
       </div>
 
       <div class="form-group">

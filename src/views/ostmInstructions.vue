@@ -16,7 +16,7 @@
       </div>
       <div class="researcherCopy" id="researcherCopy">
         <h5>Details</h5>
-        {{ instructionText }}
+        <div class="instructionText" v-html="instructionText"></div>
       </div>
       <div class="form-group">
         <!--<button id="back" type="button" class="btn btn-warning" value="back" >back</button>-->
@@ -39,6 +39,9 @@ export default {
     },
     studyQuery() {
       return this.$store.state.studyQuery;
+    },
+    instructionText() {
+      return this.$store.state.instructions;
     }
   },
   methods: {

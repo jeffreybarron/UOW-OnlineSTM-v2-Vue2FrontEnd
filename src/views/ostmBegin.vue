@@ -57,7 +57,7 @@ export default {
         SESSION_ID: this.$router.currentRoute.query.SESSION_ID
       });
       await this.$store.dispatch("loadStudy");
-      this.$store.commit("shuffleStudy");
+      await this.$store.commit("shuffleStudy");
       await this.$store.dispatch("loadConsent");
       await this.$store.dispatch("loadInstructions");
     } else {

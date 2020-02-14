@@ -39,32 +39,30 @@ export default new Vuex.Store({
     shuffleStudy(state) {
       const shuffleObject = state.study;
       // shuffle blocks in study
+      console.log('PreShuffle First Element:' + shuffleObject.blocks[0].block);
       if (shuffleObject.shuffleBlocks === true) {
         if (shuffleObject.blocks.length > 0) {
           //use splice function to seperate item zero from the rest, and shuffle it at the same time
-          var shuffled = utils.shuffleArray(shuffleObject.blocks.splice(1, shuffleObject.blocks.length));
-          /* now push each item in the shuffled list back on to the block (which at this point
-           * has only item remaining from the last operation) */
-          for (let n = 0; n < shuffled.length; n++) {
-            shuffleObject.blocks.push(shuffled[n]);
-          }
-          //output to console if you want to check it..
-          console.log(shuffled);
-          console.log(shuffleObject.blocks);
+          shuffleObject.blocks = utils.shuffleArray(shuffleObject.blocks);
         }
       }
+      console.log('PreShuffle First Element:' + shuffleObject.blocks[0].block);
 
       for (let i = 0; i < shuffleObject.blocks.length; i++) {
-        switch (shuffleObject.shuffleMode) {
+        console.log('shuffle mode[' + i + ']:' + shuffleObject.blocks[i].shuffleMode);
+        switch (shuffleObject.blocks[i].shuffleMode) {
           case 'sets': // shuffle sets in a block
-            shuffleObject.blocks[i].sets = utils.shuffleArray(shuffleObject.blocks[i].sets).splice(0);
+            shuffleObject.blocks[i].sets = utils.shuffleArray(shuffleObject.blocks[i].sets);
+            console.log('sets done');
             break;
           case 'within': // shuffle cards within sets
             for (let j = 0; j < shuffleObject.blocks[i].sets.length; j++) {
-              shuffleObject.blocks[i].sets[j].stimuli = utils.shuffleArray(shuffleObject.blocks[i].sets[j].stimuli).splice(0);
+              shuffleObject.blocks[i].sets[j].stimuli = utils.shuffleArray(shuffleObject.blocks[i].sets[j].stimuli);
             }
+            console.log('within done');
             break;
           case 'across': //shuffle cards across sets
+            console.log('across');
             //load all cards, from all sets (in this block) into an array
             var blockDeck = [];
             for (let j = 0; j < shuffleObject.blocks[i].sets.length; j++) {
@@ -75,7 +73,7 @@ export default new Vuex.Store({
               //end set
             }
             //shuffle array
-            blockDeck = utils.shuffleArray(blockDeck).splice(0);
+            blockDeck = utils.shuffleArray(blockDeck);
             //put shuffled cards into sets again
             for (let j = 0; j < shuffleObject.blocks[i].sets.length; j++) {
               for (let k = 0; k < shuffleObject.blocks[i].sets[j].stimuli.length; k++) {
@@ -90,9 +88,9 @@ export default new Vuex.Store({
           //end switch case
         }
       }
-      console.log(shuffleObject);
-      state.study.loadTime = Date.now();
-      this.state.study = { ...shuffleObject };
+      state.study = { ...shuffleObject };
+      state.study = { ...state.study, loadTime: Date.now() };
+      console.log(state.study);
     }
   },
   actions: {

@@ -57,9 +57,12 @@ export default {
         SESSION_ID: this.$router.currentRoute.query.SESSION_ID
       });
       await this.$store.dispatch("loadStudy");
-      await this.$store.commit("shuffleStudy");
+      this.$store.commit("shuffleStudy");
       await this.$store.dispatch("loadConsent");
       await this.$store.dispatch("loadInstructions");
+      await this.$nextTick(function() {
+        console.log("tick"); // => 'updated'
+      });
     } else {
       this.error = "this is an invalid query string";
     }

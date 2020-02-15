@@ -88,7 +88,7 @@ export default new Vuex.Store({
           //end switch case
         }
       }
-      state.study = { ...shuffleObject };
+      state.study = shuffleObject;
       state.study = { ...state.study, loadTime: Date.now() };
       console.log(state.study);
     }

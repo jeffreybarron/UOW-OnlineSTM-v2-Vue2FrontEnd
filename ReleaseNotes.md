@@ -12,9 +12,12 @@ display consent text
 display intruciont text
 Pass through query string to load study by props
 
-### To do
+### 20200215 0.0.3
 
 check runtime shuffle feature works
+
+### To do
+
 build completion code provider, and auto redirect
 display popup at the end of blocks if there is one.
 check answers are save properly

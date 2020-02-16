@@ -4,6 +4,7 @@ import router from './router';
 import store from './store';
 import axios from 'axios';
 import JSONView from 'vue-json-component';
+import vuetify from './plugins/vuetify';
 
 Vue.use(JSONView);
 
@@ -16,5 +17,6 @@ new Vue({
   router,
   store,
   axios,
+  vuetify,
   render: (h) => h(App)
 }).$mount('#app');

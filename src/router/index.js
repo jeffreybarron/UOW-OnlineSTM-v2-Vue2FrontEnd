@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import Home from '../views/Home.vue';
+import OSTM from '../views/ostm.vue';
 import ostmBegin from '../views/ostmBegin.vue';
 import ostmConsent from '../views/ostmConsent.vue';
 import ostmInstructions from '../views/ostmInstructions.vue';
@@ -16,13 +17,18 @@ const routes = [
     component: Home
   },
   {
+    path: '/ostm',
+    name: 'ostm',
+    component: OSTM
+  },
+  {
     path: '/ostm/begin',
     name: 'ostm-begin',
     component: ostmBegin
   },
   {
     path: '/ostm/consent',
-    // name: 'consent',
+    name: 'consent',
     component: ostmConsent
   },
   {
@@ -39,14 +45,15 @@ const routes = [
     path: '/ostm/completion',
     name: 'ostm-completion',
     component: ostmCompletion
-  },
-  {
-    path: '/about',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
   }
+  // ,
+  // {
+  //   path: '/about',
+  //   // route level code-splitting
+  //   // this generates a separate chunk (about.[hash].js) for this route
+  //   // which is lazy-loaded when the route is visited.
+  //   component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
+  // }
 ];
 
 const router = new VueRouter({

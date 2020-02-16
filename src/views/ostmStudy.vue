@@ -1,9 +1,7 @@
 <template>
-  <div class="ostm">
+  <v-app>
     <ostm-wordlist-play></ostm-wordlist-play>
-    <!-- <hr />
-    <ostm-wordlist-details></ostm-wordlist-details> -->
-  </div>
+  </v-app>
 </template>
 
 <script>

@@ -1,30 +1,42 @@
 <template>
-  <div>
-    <h4>Instructions for this study</h4>
-    <form id="instructionsForm" class="form-group row">
-      <div class="form-group row">
-        <label for="studyName" class="col-sm-3 col-form-label">Study Name</label>
+  <v-app>
+    <v-app-bar app dark dense flat color="primary">
+      <v-toolbar-title class="headline text-titlecase">
         <span>
-          {{ studyQuery.studyName }}
+          UOW Short Term Memory (STM) Study
         </span>
-      </div>
-      <div class="form-group row">
-        <label for="PROLIFIC_PID" class="col-sm-3 col-form-label">Prolific PID</label>
-        <span>
-          {{ studyQuery.PROLIFIC_PID }}
-        </span>
-      </div>
-      <div class="researcherCopy" id="researcherCopy">
-        <h5>Details</h5>
-        <div class="instructionText" v-html="instructionText"></div>
-      </div>
-      <div class="form-group">
-        <!--<button id="back" type="button" class="btn btn-warning" value="back" >back</button>-->
-        <button id="reject" @click="reject">Reject</button>
-        <button id="accept" @click="accept" autofocus>Accept</button>
-      </div>
-    </form>
-  </div>
+      </v-toolbar-title>
+    </v-app-bar>
+    <v-content dark class="primary">
+      <v-container>
+        <v-row justify="center" align="center">
+          <v-col cols="1" sm="1" fill-height></v-col>
+          <v-col cols="10" sm="10" justify="center" align="center">
+            <v-card>
+              <div v-if="error" style="color:red;">Error: {{ error }}</div>
+              <v-card-title>Instructions - How to Complete this study.</v-card-title>
+              <v-card-text>
+                <v-text-field v-model="study.studyName" label="Study Name" type="text" id="studyName" name="studyName" outlined disabled />
+                <!-- <v-text-field v-model="study.PROLIFIC_PID" label="Prolific PID" id="PROLIFIC_PID" name="PROLIFIC_PID" outlined disabled /> -->
+                <v-card-title>Details</v-card-title>
+                <div v-html="instructionText"></div>
+              </v-card-text>
+              <v-card-text>
+                <v-form id="participantIDForm" pad>
+                  <v-btn id="reject" @click="reject" class="ma-1" value="reject" rounded color="error" dark>Reject</v-btn>
+                  <v-btn id="accept" @click="accept" class="ma-1" value="accept" rounded color="accent" dark autofocus>Accept</v-btn>
+                </v-form>
+              </v-card-text>
+            </v-card>
+          </v-col>
+          <v-col cols="1" sm="1"></v-col>
+        </v-row>
+      </v-container>
+    </v-content>
+    <v-footer dark dense class="primary" app>
+      <span> Solution by jeffreybarron.com for<br />University of Wollongong. CRICOS Provider No: 00102E </span>
+    </v-footer>
+  </v-app>
 </template>
 
 <script>

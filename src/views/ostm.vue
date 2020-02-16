@@ -11,7 +11,7 @@
           <v-col cols="1" sm="1" fill-height></v-col>
           <v-col cols="10" sm="10" justify="center" align="center">
             <v-card>
-              <v-card-title>CogLab Online Studies</v-card-title>
+              <v-card-title>CogLab - Online Short Term Memory (OSTM)</v-card-title>
               <v-card-text>
                 <p>This Website can only be accessed via <a href="http://prolific.ac">http://prolific.ac</a></p>
                 <p>
@@ -32,7 +32,7 @@
 
 <script>
 export default {
-  name: 'home',
+  name: 'ostm',
   data: function() {
     return {
       myTicker: ''

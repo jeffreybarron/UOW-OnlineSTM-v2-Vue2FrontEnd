@@ -30,6 +30,10 @@ runtime shuffle feature works
 build completion code provider, and auto redirect
 answers are saved properly
 
+### 20200216 0.0.5
+
+add timed pagedirect to ostmCompletion.vue
+
 ### To do
 
 display popup at the end of blocks if there is one.

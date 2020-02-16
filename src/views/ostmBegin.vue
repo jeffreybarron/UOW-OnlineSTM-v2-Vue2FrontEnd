@@ -30,6 +30,13 @@
         <button id="accept" class="btn btn-success" @click="accept" value="accept" autofocus>Accept</button>
       </div>
     </form>
+    <p>To complete this study successfully and recieve your prolific code:</p>
+    <ul>
+      <li>you must not use the browser back or forward buttons</li>
+      <li>you may only interact with the buttons on the page such as Accept, Reject, Start and Submit</li>
+      <li>your browser must be a recent version, and have javascript enabled.</li>
+    </ul>
+    <p>Thank you for your valuable contribution to Cognition research.</p>
   </div>
 </template>
 

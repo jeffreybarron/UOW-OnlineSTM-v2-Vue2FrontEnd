@@ -1,27 +1,28 @@
 <template>
   <div>
-    <h4 id="pageTitle">This study is now complete.</h4>
+    <h4 id="pageTitle">The study is now complete.</h4>
     <p>Your Prolific "Completion Code" is shown here in red, you can note it down or select and copy it.</p>
     <div id="prolificCode" class="lead text-center">
-      <p>[CODE]</p>
+      <p>
+        <span style="color: red">{{ study.completionCode }}</span>
+      </p>
     </div>
   </div>
 </template>
 
 <script>
-// @ is an alias to /src
-
 export default {
-  name: 'ostm',
-  components: {},
+  name: "completion",
   computed: {
     study() {
       return this.$store.state.study;
-    },
-    studyQuery() {
-      return this.$store.state.studyQuery;
     }
-  }
+  },
+  created() {
+    console.log("commit it");
+    this.$store.commit("loadCompletionCode");
+  },
+  components: {}
 };
 </script>
 

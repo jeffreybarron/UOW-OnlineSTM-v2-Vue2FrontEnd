@@ -39,30 +39,23 @@ export default new Vuex.Store({
     shuffleStudy(state) {
       const shuffleObject = state.study;
       // shuffle blocks in study
-      console.log('PreShuffle First Element:' + shuffleObject.blocks[0].block);
       if (shuffleObject.shuffleBlocks === true) {
         if (shuffleObject.blocks.length > 0) {
           //use splice function to seperate item zero from the rest, and shuffle it at the same time
           shuffleObject.blocks = utils.shuffleArray(shuffleObject.blocks);
         }
       }
-      console.log('PreShuffle First Element:' + shuffleObject.blocks[0].block);
-
       for (let i = 0; i < shuffleObject.blocks.length; i++) {
-        console.log('shuffle mode[' + i + ']:' + shuffleObject.blocks[i].shuffleMode);
         switch (shuffleObject.blocks[i].shuffleMode) {
           case 'sets': // shuffle sets in a block
             shuffleObject.blocks[i].sets = utils.shuffleArray(shuffleObject.blocks[i].sets);
-            console.log('sets done');
             break;
           case 'within': // shuffle cards within sets
             for (let j = 0; j < shuffleObject.blocks[i].sets.length; j++) {
               shuffleObject.blocks[i].sets[j].stimuli = utils.shuffleArray(shuffleObject.blocks[i].sets[j].stimuli);
             }
-            console.log('within done');
             break;
           case 'across': //shuffle cards across sets
-            console.log('across');
             //load all cards, from all sets (in this block) into an array
             var blockDeck = [];
             for (let j = 0; j < shuffleObject.blocks[i].sets.length; j++) {
@@ -90,7 +83,31 @@ export default new Vuex.Store({
       }
       state.study = shuffleObject;
       state.study = { ...state.study, loadTime: Date.now() };
-      console.log(state.study);
+    },
+    loadCompletionCode(state) {
+      let sURL = 'http://localhost:3000/ostm/API/issuecode/';
+      return axios({
+        method: 'post',
+        url: sURL,
+        data: this.state.study,
+        headers: { 'Content-Type': 'application/json' },
+        xsrfCookieName: 'XSRF-TOKEN',
+        xsrfHeaderName: 'X-XSRF-TOKEN'
+      })
+        .then((response) => {
+          console.log('code load');
+          console.log(response.data);
+
+          state.study = { ...state.study, redirectTimer: response.data.redirectTimer };
+          state.study = { ...state.study, completionCode: response.data.completionCode };
+          state.study = { ...state.study, completionURL: response.data.completionURL };
+
+          console.log('final state');
+          console.log(state);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     }
   },
   actions: {
@@ -135,7 +152,7 @@ export default new Vuex.Store({
       // , 'Access-Control-Allow-Origin': '*'
       // .post('/ostm/results', data, { 'Content-Type': 'application/json; charset=UTF-8' })
       return axios
-        .post('/ostm/results', this.state.study, { 'Access-Control-Allow-Origin': '*' })
+        .post(`${this.state.settings.baseURL}/ostm/results`, this.state.study, { 'Access-Control-Allow-Origin': '*' })
         .then(function(response) {
           if (response.status == 202) {
             console.log('save complete, proceed to issueing code');
@@ -144,7 +161,8 @@ export default new Vuex.Store({
           }
         })
         .catch(function(error) {
-          this.error = error;
+          console.log(error);
+          // this.error = error;
         });
     }
   },

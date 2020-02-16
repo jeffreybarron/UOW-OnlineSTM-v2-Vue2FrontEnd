@@ -17,9 +17,9 @@
         <button @click="updateAnswers" @keyup.enter="updateAnswers">enter</button>
       </div>
     </div>
-    <div style="background: #F4F6F6; border-style:solid;border:2px;">
+    <!-- <div style="background: #F4F6F6; border-style:solid;border:2px;">
       <json-view :data="study" />
-    </div>
+    </div>-->
   </div>
 </template>
 
@@ -171,7 +171,7 @@ export default {
         this.saveResults();
       }
     },
-    saveResults() {
+    async saveResults() {
       this.show_start_button = false;
       this.show_stimulus = false;
       this.show_answer_input = false;
@@ -186,8 +186,7 @@ export default {
       this.$store.commit("logSaveTime", {
         saveTime: Date.now()
       });
-
-      this.$store.dispatch("saveStudy");
+      await this.$store.dispatch("saveStudy");
       // figure how to make the above thenable or Wait
       this.$router.push("/ostm/completion");
     }

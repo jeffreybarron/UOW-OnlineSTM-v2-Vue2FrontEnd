@@ -43,17 +43,24 @@ format to be near that of previos version
 added home page "\"
 added ostm home page "\ostm
 
-### To do
+## 20200217 0.1.1
 
+display popup at the end of blocks if there is one.
+
+## 20200217 0.1.2
+
+Modal improvements
+fixed block 0 practice block logic. (block 0 needs to not be sorted)
 Add stimulus counter label to study ticker page
 add + next to start button for user to know where to look
-display popup at the end of blocks if there is one.
+
+### To do
+
 fix study input and button focus problem
-Add error handling
+Rebuild management front end
+add error handling
 Code Review
 trial deploy (for documenting not actual deployment)
-
-Rebuild management front end
 
 ## Begin API Review... New Project
 

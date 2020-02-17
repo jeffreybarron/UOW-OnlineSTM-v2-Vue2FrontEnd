@@ -2,6 +2,7 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import axios from 'axios';
 import utils from '../utils/index.js';
+import modalManager from './modalManager';
 
 Vue.use(Vuex);
 
@@ -41,8 +42,16 @@ export default new Vuex.Store({
       // shuffle blocks in study
       if (shuffleObject.shuffleBlocks === true) {
         if (shuffleObject.blocks.length > 0) {
-          //use splice function to seperate item zero from the rest, and shuffle it at the same time
-          shuffleObject.blocks = utils.shuffleArray(shuffleObject.blocks);
+          // Steve and Leonie wanted a 'practice' block, this practice block is item 0
+          // the practice block must always be played first, therefore we splice to
+          // carve off and shuffle blocks from 1+
+          let shuffled = utils.shuffleArray(shuffleObject.blocks.splice(1, shuffleObject.blocks.length));
+
+          //then we add the shuffled blocks back to the array, leaving 0 unmoved
+          // shuffleObject.blocks = { ...shuffleObject.blocks, ...shuffled };
+          for (let n = 0; n < shuffled.length; n++) {
+            shuffleObject.blocks.push(shuffled[n]);
+          }
         }
       }
       for (let i = 0; i < shuffleObject.blocks.length; i++) {
@@ -85,6 +94,7 @@ export default new Vuex.Store({
       state.study = { ...state.study, loadTime: Date.now() };
     },
     loadCompletionCode(state) {
+      //this function aysn and should be redone, load file should be an action, and state update as mutation
       let sURL = 'http://localhost:3000/ostm/API/issuecode/';
       return axios({
         method: 'post',
@@ -166,5 +176,7 @@ export default new Vuex.Store({
         });
     }
   },
-  modules: {}
+  modules: {
+    modalManager
+  }
 });

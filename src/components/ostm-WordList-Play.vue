@@ -13,20 +13,30 @@
                   <div v-if="show_start_button" class="headline"><span>+</span></div>
                   <div v-if="show_stimulus" class="headline">{{ stimulus_value }}</div>
                   <div v-if="show_answer_input">
+                    <!-- Using a random string for ID, ensures that chrome autofill is at least unique to this study -->
                     <v-text-field
                       v-model="answer"
-                      id="answer"
+                      :id="
+                        Math.random()
+                          .toString(36)
+                          .substring(2, 15) +
+                          Math.random()
+                            .toString(36)
+                            .substring(2, 15)
+                      "
                       @keyup.enter="updateAnswers"
                       background-color="indigo lighten-5"
                       placeholder="type word..."
-                      outlined
+                      class="v-label theme--light"
+                      :label="'Stimulus #' + displayCounter"
+                      :hint="'Stimulus #' + displayCounter"
                       filled
                       justify="center"
                       align="center"
                       autofocus
                     />
                   </div>
-                  <v-layout v-if="show_modal"><ostm-wordlist-play-modal modalBody="sometext"/></v-layout>
+                  <modal-dialog />
                 </v-col>
                 <!-- Right Column -->
                 <v-col col="12">
@@ -47,10 +57,12 @@
 </template>
 
 <script>
-import ostmWordListPlayModal from './ostm-WordList-Play-Modal.vue';
+// import ostmWordListPlayModal from './ostm-WordList-Play-Modal.vue';
+import ModalDialog from './modalDialog.vue';
 export default {
   /* for storing stuff locally */
-  components: { 'ostm-wordlist-play-modal': ostmWordListPlayModal },
+
+  components: { 'modal-dialog': ModalDialog },
   data: function() {
     return {
       answer: '',
@@ -60,6 +72,7 @@ export default {
       setCounter: 0,
       answerCounter: 0,
       stimulusCounter: 0,
+      displayCounter: 1,
       stimulus_interval_ms: 0,
       stimulus_value: 'STIMULUS ERROR!',
       stimulus_color: '',
@@ -145,6 +158,7 @@ export default {
         this.answer = ''; //reset form for next answer
         this.answerCounter++; //this is why study.ejs input id=answer, requires name to be 0 and nothing else.
         // this.answer.focus();
+        this.displayCounter = this.answerCounter + 1;
       }
 
       //if we have reached the last stimulus in the set then increment the set
@@ -153,6 +167,7 @@ export default {
         //reset answers
         this.stimulusCounter = 0;
         this.answerCounter = 0;
+        this.displayCounter = 1;
 
         this.show_start_button = true;
         this.show_stimulus = false;
@@ -166,9 +181,10 @@ export default {
       //if we have reached the last set in the block?, then increment the block
       if (this.setCounter >= this.study.blocks[this.blockCounter].sets.length) {
         if (this.study.blocks[this.blockCounter].blockPopUp.length > 1) {
-          console.log('go modal');
-          this.modalMessage = this.study.blocks[this.blockCounter].blockPopUp;
-          this.show_modal = true;
+          this.$store.dispatch('modalManager/ask', {
+            title: 'Info',
+            body: this.study.blocks[this.blockCounter].blockPopUp
+          });
         }
 
         this.blockCounter++;

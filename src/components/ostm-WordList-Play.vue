@@ -4,29 +4,41 @@
       <v-container fill-height>
         <v-row justify="center" align="center">
           <v-col cols="12" sm="12" justify="center" align="center">
-            <div v-if="show_start_button" class="start">
-              <v-btn @click="startQuestions" rounded color="accent" dark autofocus>click to start</v-btn>
-            </div>
-            <div v-if="show_stimulus" class="headline">{{ stimulus_value }}</div>
-            <div v-if="show_answer_input">
-              <v-row justify="center" align="center">
-                <v-col cols="12" sm="4">
-                  <v-text-field
-                    v-model="answer"
-                    id="answer"
-                    @keyup.enter="updateAnswers"
-                    background-color="indigo lighten-5"
-                    placeholder="type word..."
-                    outlined
-                    filled
-                    justify="center"
-                    align="center"
-                    autofocus
-                  />
-                  <v-btn @click="updateAnswers" @keyup.enter="updateAnswers" rounded color="accent" dark>enter</v-btn>
+            <v-container fluid>
+              <v-row>
+                <!-- Left Column -->
+                <v-col col="12"></v-col>
+                <!-- Center Column -->
+                <v-col col="12">
+                  <div v-if="show_start_button" class="headline"><span>+</span></div>
+                  <div v-if="show_stimulus" class="headline">{{ stimulus_value }}</div>
+                  <div v-if="show_answer_input">
+                    <v-text-field
+                      v-model="answer"
+                      id="answer"
+                      @keyup.enter="updateAnswers"
+                      background-color="indigo lighten-5"
+                      placeholder="type word..."
+                      outlined
+                      filled
+                      justify="center"
+                      align="center"
+                      autofocus
+                    />
+                  </div>
+                  <v-layout v-if="show_modal"><ostm-wordlist-play-modal modalBody="sometext"/></v-layout>
+                </v-col>
+                <!-- Right Column -->
+                <v-col col="12">
+                  <div v-if="show_start_button" class="start">
+                    <v-btn @click="startQuestions" rounded color="success" dark autofocus>start</v-btn>
+                  </div>
+                  <div v-if="show_answer_input">
+                    <v-btn @click="updateAnswers" @keyup.enter="updateAnswers" rounded color="accent" dark>enter</v-btn>
+                  </div>
                 </v-col>
               </v-row>
-            </div>
+            </v-container>
           </v-col>
         </v-row>
       </v-container>
@@ -35,9 +47,10 @@
 </template>
 
 <script>
+import ostmWordListPlayModal from './ostm-WordList-Play-Modal.vue';
 export default {
   /* for storing stuff locally */
-
+  components: { 'ostm-wordlist-play-modal': ostmWordListPlayModal },
   data: function() {
     return {
       answer: '',
@@ -53,7 +66,9 @@ export default {
       stimiulus_background: '',
       show_start_button: true,
       show_stimulus: false,
-      show_answer_input: false
+      show_answer_input: false,
+      modalMessage: 'parent message',
+      show_modal: false
     };
   },
   /* computed PROPERTY, behaves like a property */
@@ -150,15 +165,11 @@ export default {
 
       //if we have reached the last set in the block?, then increment the block
       if (this.setCounter >= this.study.blocks[this.blockCounter].sets.length) {
-        // alert("end of block:" + blockCounter);
-        // if (this.study.studyConfig.blocks[this.blockCounter].blockPopUp.length > 1) {
-        //   $('#modal-body').html(state.studyConfig.blocks[blockCounter].blockPopUp);
-        //   toggleModal();
-        //   start_DIV.style.display = 'block';
-        //   show_DIV.style.display = 'none';
-        //   answer_DIV.style.display = 'none';
-        //   document.getElementById('start_btn').focus();
-        // }
+        if (this.study.blocks[this.blockCounter].blockPopUp.length > 1) {
+          console.log('go modal');
+          this.modalMessage = this.study.blocks[this.blockCounter].blockPopUp;
+          this.show_modal = true;
+        }
 
         this.blockCounter++;
         this.setCounter = 0; //new block new sets

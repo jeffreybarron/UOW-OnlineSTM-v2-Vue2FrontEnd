@@ -14,10 +14,10 @@
           <v-col cols="10" sm="10" justify="center" align="center">
             <v-card>
               <v-list dense>
-                <v-subheader class="headline text-titlecase">To recieve your prolific code at the end of this study.</v-subheader>
-                <v-list-item>you must not use the browser back or forward buttons</v-list-item>
-                <v-list-item>you may only interact with the buttons on the page such as Accept, Reject, Start and Submit</v-list-item>
-                <v-list-item>your browser must be a recent version, and have javascript enabled.</v-list-item>
+                <v-subheader class="headline text-titlecase">To recieve your prolific code:</v-subheader>
+                <v-list-item class="text-left">You must not use the browser back or forward buttons;</v-list-item>
+                <v-list-item class="text-left">you may only interact with the buttons on the page such as Accept, Reject, Start and Submit;</v-list-item>
+                <v-list-item class="text-left">your browser must be a recent version, and have javascript enabled.</v-list-item>
               </v-list>
 
               <div v-if="error" style="color:red;">Error: {{ error }}</div>

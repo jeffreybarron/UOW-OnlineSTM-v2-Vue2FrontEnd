@@ -45,6 +45,11 @@
 export default {
   name: 'ostm',
   components: {},
+  data() {
+    return {
+      error: ''
+    };
+  },
   computed: {
     study() {
       return this.$store.state.study;

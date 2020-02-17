@@ -47,7 +47,8 @@ export default {
   name: 'completion',
   data: function() {
     return {
-      myTicker: ''
+      myTicker: '',
+      error: ''
     };
   },
   computed: {

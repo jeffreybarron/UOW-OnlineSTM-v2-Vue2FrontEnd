@@ -44,6 +44,11 @@
 
 export default {
   name: 'ostm',
+  data() {
+    return {
+      error: ''
+    };
+  },
   components: {},
   computed: {
     study() {

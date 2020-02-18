@@ -93,31 +93,10 @@ export default new Vuex.Store({
       state.study = shuffleObject;
       state.study = { ...state.study, loadTime: Date.now() };
     },
-    loadCompletionCode(state) {
-      //this function aysn and should be redone, load file should be an action, and state update as mutation
-      let sURL = 'http://localhost:3000/ostm/API/issuecode/';
-      return axios({
-        method: 'post',
-        url: sURL,
-        data: this.state.study,
-        headers: { 'Content-Type': 'application/json' },
-        xsrfCookieName: 'XSRF-TOKEN',
-        xsrfHeaderName: 'X-XSRF-TOKEN'
-      })
-        .then((response) => {
-          console.log('code load');
-          console.log(response.data);
-
-          state.study = { ...state.study, redirectTimer: response.data.redirectTimer };
-          state.study = { ...state.study, completionCode: response.data.completionCode };
-          state.study = { ...state.study, completionURL: response.data.completionURL };
-
-          console.log('final state');
-          console.log(state);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+    injectCompletionPayload(state, payload) {
+      state.study = { ...state.study, redirectTimer: payload.redirectTimer };
+      state.study = { ...state.study, completionCode: payload.completionCode };
+      state.study = { ...state.study, completionURL: payload.completionURL };
     }
   },
   actions: {
@@ -155,6 +134,29 @@ export default new Vuex.Store({
         })
         .catch((error) => {
           this.error = error;
+        });
+    },
+    loadCompletionCode() {
+      //this function aysn and should be redone, load file should be an action, and state update as mutation
+      let sURL = 'http://localhost:3000/ostm/API/issuecode/';
+      return axios({
+        method: 'post',
+        url: sURL,
+        data: this.state.study,
+        headers: { 'Content-Type': 'application/json' },
+        xsrfCookieName: 'XSRF-TOKEN',
+        xsrfHeaderName: 'X-XSRF-TOKEN'
+      })
+        .then((response) => {
+          let payload = {
+            redirectTimer: response.data.redirectTimer,
+            completionCode: response.data.completionCode,
+            completionURL: response.data.completionURL
+          };
+          this.commit('injectCompletionPayload', payload);
+        })
+        .catch((error) => {
+          console.log(error);
         });
     },
     saveStudy() {

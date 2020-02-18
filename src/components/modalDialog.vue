@@ -24,9 +24,8 @@ export default {
   },
   methods: {
     confirm() {
-      console.log(this.modalManager);
       this.modalManager.resolve(true);
-      this.$store.commit('modalManager/DEACTIVATE');
+      this.$store.commit("modalManager/DEACTIVATE");
     }
   }
 };

@@ -11,7 +11,6 @@ const state = Object.assign({}, initialState);
 const mutations = {
   ACTIVATE: (state, payload) => {
     Object.assign(state, payload);
-    console.log(payload);
   },
   DEACTIVATE: (state) => {
     Object.assign(state, initialState);

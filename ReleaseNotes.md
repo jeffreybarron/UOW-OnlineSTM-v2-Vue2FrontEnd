@@ -54,18 +54,22 @@ fixed block 0 practice block logic. (block 0 needs to not be sorted)
 Add stimulus counter label to study ticker page
 add + next to start button for user to know where to look
 
+## 20200218 0.1.3
+
+fix study input and button focus problem (mostly)
+-> this is still not working for modal box and start button after modal closed
+
 ### To do
 
-fix study input and button focus problem
 Rebuild management front end
-add error handling
 Code Review
 trial deploy (for documenting not actual deployment)
 
 ## Begin API Review... New Project
 
 note changes in current api build from production
-strip out API extras.
+pull redundant fields out of sample resources
+strip out API front end?.
 redocument build process for API
 trial deploy new front and back of front end
 

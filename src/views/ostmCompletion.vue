@@ -2,9 +2,7 @@
   <v-app>
     <v-app-bar app dark dense flat color="primary">
       <v-toolbar-title class="headline text-titlecase">
-        <span>
-          UOW Short Term Memory (STM) Study
-        </span>
+        <span>UOW Short Term Memory (STM) Study</span>
       </v-toolbar-title>
     </v-app-bar>
     <v-content dark class="primary">
@@ -37,18 +35,21 @@
       </v-container>
     </v-content>
     <v-footer dark dense class="primary" app>
-      <span> Solution by jeffreybarron.com for<br />University of Wollongong. CRICOS Provider No: 00102E </span>
+      <span>
+        Solution by jeffreybarron.com for
+        <br />University of Wollongong. CRICOS Provider No: 00102E
+      </span>
     </v-footer>
   </v-app>
 </template>
 
 <script>
 export default {
-  name: 'completion',
+  name: "completion",
   data: function() {
     return {
-      myTicker: '',
-      error: ''
+      myTicker: "",
+      error: ""
     };
   },
   computed: {
@@ -57,14 +58,13 @@ export default {
     }
   },
   created() {
-    console.log('commit it');
     // Axios call to the API, API first checks if the study was completed and properly saved
     // if a saved file is found on the server, then the API answers with a valid code.
-    this.$store.commit('loadCompletionCode');
+    this.$store.dispatch("loadCompletionCode");
 
     // in previous version there was an extra save here, but it was redundant, so now
     // we simply set the redirect timer, passing the code as a query string
-    if (this.study.redirectTimer <= '600000') {
+    if (this.study.redirectTimer <= "600000") {
       this.myTicker = setInterval(() => {
         window.location.href = this.study.completionURL;
       }, parseInt(this.study.redirectTimer));
